@@ -76,15 +76,21 @@ public class InscriptionServlet extends HttpServlet {
 		String prenom = map.get("PRENOM")[0];
 		String motDePasse = map.get("MOT_DE_PASSE")[0];
 		
-		Long idNiveau = Long.parseLong(map.get("ID_NIVEAU")[0]);
-		if (!map.containsKey("ID_NIVEAU") || map.get("ID_NIVEAU")[0].equals("")) {
+		Long niveauString = Long.parseLong(map.get("ID_NIVEAU")[0]);
+		Long idVille = Long.parseLong(map.get("ID_VILLE")[0]);
+
+		// On vérifié d'abord que la map contient la clé ID_NIVEAU
+// 		// si elle la contient, on vérifié qu'elle n'est pas égale à chaîne vide
+		if (!map.containsKey("ID_NIVEAU") || niveauString.equals("")) {
 			request.setAttribute("nom", nom);
 			request.setAttribute("prenom", prenom);
+			request.getRequestDispatcher("/WEB-INF/inscription.jsp").forward(request, response);
+		} else {
+			Long idNiveau =  Long.parseLong(niveauString);
+			joueurService.ajouterJoueur(email, nom, prenom, motDePasse, idNiveau, idVille);
 		}
 
-
-		Long idVille = Long.parseLong(map.get("ID_VILLE")[0]);
-		joueurService.ajouterJoueur(email, nom, prenom, motDePasse, idNiveau, idVille);
+		joueurService.ajouterJoueur(email, nom, prenom, motDePasse, niveauString, idVille);
 		response.sendRedirect("index");
 	}
 }
